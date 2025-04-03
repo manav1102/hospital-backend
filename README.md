@@ -1,1 +1,1 @@
-# hospital_backend
+# hospitalManagementSystem
