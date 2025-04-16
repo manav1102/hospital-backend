@@ -29,7 +29,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-// ✅ Connect DB before handling any request
-
 
 module.exports = app;
