@@ -1,15 +1,20 @@
 {
   "version": 2,
+  "functions": {
+    "api/handler.js": {
+      "maxDuration": 10
+    }
+  },
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "api/handler.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/index.js"
+      "dest": "/api/handler.js"
     }
   ]
 }

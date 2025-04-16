@@ -1,5 +1,5 @@
 const express = require("express");
-const { connectToDB } = require("../db.js");
+const { connectDB } = require("../db.js");
 const authRoutes = require("../src/routes/authRoutes.js");
 const hospitalRoutes = require("../src/routes/hospitalRoutes.js");
 const doctorRoutes = require("../src/routes/doctorRoutes.js");
@@ -28,6 +28,6 @@ app.use((err, req, res, next) => {
 });
 
 // ✅ Connect DB before handling any request
-connectToDB();
+connectDB();
 
 module.exports = app;
