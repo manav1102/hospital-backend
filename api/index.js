@@ -1,5 +1,5 @@
 const express = require("express");
-const { connectDB } = require("../db.js");
+const { connectToDB } = require("../db.js");
 const authRoutes = require("../src/routes/authRoutes.js");
 const hospitalRoutes = require("../src/routes/hospitalRoutes.js");
 const doctorRoutes = require("../src/routes/doctorRoutes.js");
@@ -9,8 +9,7 @@ require("dotenv").config();
 const { apiLogger } = require("../src/middleware/authMiddleware.js");
 
 const app = express();
-
-connectDB();
+connectToDB;
 
 // ✅ Middleware
 app.use(express.json());
