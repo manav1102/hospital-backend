@@ -8,8 +8,9 @@ const cors = require("cors");
 require("dotenv").config();
 const { apiLogger } = require("../src/middleware/authMiddleware.js");
 
-connectToDB;
+
 const app = express();
+connectToDB;
 
 
 // ✅ Middleware
