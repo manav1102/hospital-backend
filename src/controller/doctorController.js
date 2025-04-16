@@ -69,9 +69,12 @@ const getAllDoctors = async (req, res) => {
         const page = parseInt(req.query.page) || 1; // Default page = 1
         const limit = parseInt(req.query.limit) || 10; // Default limit = 10
 
+        const decoded = decodeToken(req);
+        const hospitalId = decoded.userId;
+
         const skip = (page - 1) * limit;
 
-        const doctor = await Doctor.find()
+        const doctor = await Doctor.find({hospitalId})
             .sort({ createdAt: -1 }) // Latest first
             .skip(skip)
             .limit(limit);
