@@ -10,6 +10,8 @@ const { apiLogger } = require("../src/middleware/authMiddleware.js");
 
 const app = express();
 
+connectDB();
+
 // ✅ Middleware
 app.use(express.json());
 app.use(cors());
@@ -28,6 +30,6 @@ app.use((err, req, res, next) => {
 });
 
 // ✅ Connect DB before handling any request
-connectDB();
+
 
 module.exports = app;
