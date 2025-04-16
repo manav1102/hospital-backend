@@ -1,22 +1,18 @@
 const express = require("express");
-const connectDB = require("../db.js");
+const { connectToDB } = require("../db.js");
 const authRoutes = require("../src/routes/authRoutes.js");
 const hospitalRoutes = require("../src/routes/hospitalRoutes.js");
 const doctorRoutes = require("../src/routes/doctorRoutes.js");
-const patientRoutes= require("../src/routes/patientRoutes.js");
+const patientRoutes = require("../src/routes/patientRoutes.js");
 const cors = require("cors");
 require("dotenv").config();
-const {apiLogger} = require("../src/middleware/authMiddleware.js");
-
+const { apiLogger } = require("../src/middleware/authMiddleware.js");
 
 const app = express();
 
-// ✅ Connect to MongoDB
-connectDB();
-
 // ✅ Middleware
 app.use(express.json());
-app.use(cors()); // Enable CORS for API security
+app.use(cors());
 app.use(apiLogger);
 
 // ✅ Routes
@@ -25,16 +21,13 @@ app.use("/api/hospitals", hospitalRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/patient", patientRoutes);
 
-
-
 // ✅ Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error("❌ Error:", err.message);
-    res.status(500).json({ message: "Internal Server Error" });
+  console.error("❌ Error:", err.message);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
-// ✅ Server Listener
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// ✅ Connect DB before handling any request
+connectToDB();
+
+module.exports = app;
