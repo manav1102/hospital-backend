@@ -6,7 +6,6 @@ const doctorRoutes = require("../src/routes/doctorRoutes.js");
 const patientRoutes = require("../src/routes/patientRoutes.js");
 const cors = require("cors");
 require("dotenv").config();
-const serverless = require("serverless-http");
 const { apiLogger } = require("../src/middleware/authMiddleware.js");
 
 
@@ -32,10 +31,4 @@ app.use((err, req, res, next) => {
 });
 
 
-// ✅ Server Listener
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
-
-module.exports.handler = serverless(app);
+module.exports = app;
