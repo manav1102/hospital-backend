@@ -6,7 +6,7 @@ const doctorSchema = new mongoose.Schema({
     gender: { type: String, required: true },
     dob: { type: Date, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
+    phone: { type: String, required: true},
     photo: { type: String },
     password: { type: String, required: true },
     role: { type: String, required: true },
@@ -18,10 +18,7 @@ const doctorSchema = new mongoose.Schema({
     consultationFee: { type: Number },
 
     availableDays: { type: [String], required: true },
-    workingHours: {
-        start: { type: String, required: true },
-        end: { type: String, required: true }
-    },
+    workingHours: { type: String, required: true },
     appointmentDuration: { type: Number },
 
     address: { type: String, required: true },

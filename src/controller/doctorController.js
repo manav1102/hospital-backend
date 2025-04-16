@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const { authMiddleware, decodeToken } = require("../middleware/authMiddleware.js");
 
 
-
 const addDoctor = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
@@ -33,7 +32,16 @@ const addDoctor = async (req, res) => {
         // ✅ Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        // ✅ Create and Save Doctor
+        const doctor = new Doctor({
+            doctorId: doctorId,
+            ...req.body,
+            password: hashedPassword,
+            role: "doctor",
+            hospitalId,  // This is extracted from the token
+        });
 
+        await doctor.save();
         // ✅ Create and Save User
         const user = new User({
             userId: doctorId,
@@ -44,16 +52,7 @@ const addDoctor = async (req, res) => {
         });
         await user.save();
 
-        // ✅ Create and Save Doctor
-        const doctor = new Doctor({
-            doctorId:doctorId,
-            ...req.body,
-            password: hashedPassword,
-            role: "doctor",
-            hospitalId,  // This is extracted from the token
-        });
 
-        await doctor.save();
 
         res.status(201).json({ message: "Doctor added successfully", doctor });
     } catch (error) {
@@ -67,9 +66,31 @@ const addDoctor = async (req, res) => {
 // ✅ Get All Hospitals
 const getAllDoctors = async (req, res) => {
     try {
-        const doctor = await Doctor.find();
-        res.status(200).json({ status: 200, success: true, message: 'All Doctor fetched successfully', data: doctor }); 
-       } catch (err) {
+        const page = parseInt(req.query.page) || 1; // Default page = 1
+        const limit = parseInt(req.query.limit) || 10; // Default limit = 10
+
+        const skip = (page - 1) * limit;
+
+        const doctor = await Doctor.find()
+            .sort({ createdAt: -1 }) // Latest first
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Doctor.countDocuments(); // Total hospitals
+
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: 'Doctors fetched successfully',
+            data: doctor,
+            pagination: {
+                totalItems: total,
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                pageSize: limit,
+            },
+        });
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
@@ -103,7 +124,7 @@ const editDoctor = async (req, res) => {
         const doctor = await Doctor.findOneAndUpdate(
             { doctorId },
             req.body,
-            { new: true } 
+            { new: true }
         );
 
         console.log("Updated Doctor:", doctor);
@@ -127,7 +148,7 @@ const deleteDoctor = async (req, res) => {
         console.log("Received Doctor ID:", doctorId); // Debugging
 
         const doctor = await Doctor.findOneAndDelete({ doctorId });
-        const user = await User.findOneAndDelete({ userId:doctorId });
+        const user = await User.findOneAndDelete({ userId: doctorId });
 
 
         console.log("Deleted Doctor:", doctor); // Debugging
@@ -143,6 +164,23 @@ const deleteDoctor = async (req, res) => {
     }
 };
 
+const getDoctorList = async (req, res) => {
+    try {
+        const doctors = await Doctor.find({}, 'doctorId fullName').sort({ createdAt: -1 });
 
-module.exports = { addDoctor, getAllDoctors, editDoctor, deleteDoctor, getDoctorById };
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: 'Doctor list fetched successfully',
+            data: doctors
+        });
+    } catch (err) {
+        console.error("Error fetching doctor list:", err);
+        res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+};
+
+
+
+module.exports = { addDoctor, getAllDoctors, editDoctor, deleteDoctor, getDoctorById, getDoctorList };
 

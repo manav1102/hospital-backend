@@ -49,7 +49,6 @@ const authMiddleware = async (req, res, next) => {
     }
 };
 
-
 // ✅ Admin Authorization Middleware
 const adminAuth = (req, res, next) => {
     try {
@@ -73,6 +72,21 @@ const hospitalAuth = (req, res, next) => {
         
         if (decoded.role !== "hospital") {
             return res.status(403).json({ message: "Access denied. Hospital only." });
+        }
+        
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: error.message });
+    }
+};
+
+const doctorAuth = (req, res, next) => {
+    try {
+        const decoded = decodeToken(req);
+        console.log("🔍 Decoded Token:", decoded);
+        
+        if (decoded.role !== "hospital" && decoded.role !== "doctor") {
+            return res.status(403).json({ message: "Access denied. Doctor and Hospital only." });
         }
         
         next();
@@ -105,4 +119,4 @@ const apiLogger = async (req, res, next) => {
     next(); // Move to the next middleware
 };
 
-module.exports = { authMiddleware, adminAuth, hospitalAuth, generateUserToken, decodeToken, apiLogger };
+module.exports = { authMiddleware, adminAuth, hospitalAuth, generateUserToken, decodeToken, apiLogger, doctorAuth };

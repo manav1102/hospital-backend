@@ -36,15 +36,39 @@ const addHospital = async (req, res) => {
 };
 
 
-// ✅ Get All Hospitals
+// ✅ Get All Hospitals with Pagination (Latest First)
 const getAllHospitals = async (req, res) => {
     try {
-        const hospitals = await Hospital.find();
-        res.status(200).json({ status: 200, success: true, message: 'All Hospital fetched successfully', data: hospitals });
+      const page = parseInt(req.query.page) || 1; // Default page = 1
+      const limit = parseInt(req.query.limit) || 10; // Default limit = 10
+  
+      const skip = (page - 1) * limit;
+  
+      const hospitals = await Hospital.find()
+        .sort({ createdAt: -1 }) // Latest first
+        .skip(skip)
+        .limit(limit);
+  
+      const total = await Hospital.countDocuments(); // Total hospitals
+  
+      res.status(200).json({
+        status: 200,
+        success: true,
+        message: 'Hospitals fetched successfully',
+        data: hospitals,
+        pagination: {
+          totalItems: total,
+          currentPage: page,
+          totalPages: Math.ceil(total / limit),
+          pageSize: limit,
+        },
+      });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
     }
-};
+  };
+  
+  
 
 const getHospitalById = async (req, res) => {
     try {
@@ -59,7 +83,12 @@ const getHospitalById = async (req, res) => {
             return res.status(404).json({ message: "Hospital not found" });
         }
 
-        res.status(200).json(hospital);
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: 'Hospital Details fetched successfully',
+            data: hospital
+          });
     } catch (err) {
         console.error("Error fetching hospital:", err);
         res.status(500).json({ message: "Internal server error", error: err.message });

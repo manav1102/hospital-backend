@@ -16,4 +16,8 @@ router.route("/getById/:doctorId")
     .put(authMiddleware.hospitalAuth, doctorController.editDoctor)      // Edit hospital
     .delete(authMiddleware.hospitalAuth, doctorController.deleteDoctor);// Delete hospital
 
+router.route("/getDoctorLight")
+    .get(authMiddleware.hospitalAuth ,doctorController.getDoctorList);  
+
+
 module.exports = router;

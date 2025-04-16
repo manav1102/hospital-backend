@@ -10,6 +10,7 @@ const hospitalSchema = new mongoose.Schema({
     hospitalType: { type: String, required:true },
     password: { type: String, required:true },
     role: { type: String, required: true },
+    status: { type: String, required: true, default:"Active" },
     image: { type: String }  // URL or Base64
 }, { timestamps: true });
 

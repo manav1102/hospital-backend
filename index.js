@@ -3,6 +3,7 @@ const connectDB = require("./db");
 const authRoutes = require("./src/routes/authRoutes.js");
 const hospitalRoutes = require("./src/routes/hospitalRoutes.js");
 const doctorRoutes = require("./src/routes/doctorRoutes.js");
+const patientRoutes= require("./src/routes/patientRoutes.js");
 const cors = require("cors");
 require("dotenv").config();
 const {apiLogger} = require("./src/middleware/authMiddleware.js");
@@ -22,6 +23,8 @@ app.use(apiLogger);
 app.use("/api/auth", authRoutes);
 app.use("/api/hospitals", hospitalRoutes);
 app.use("/api/doctors", doctorRoutes);
+app.use("/api/patient", patientRoutes);
+
 
 
 // ✅ Error Handling Middleware
