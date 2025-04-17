@@ -52,8 +52,6 @@ const addDoctor = async (req, res) => {
         });
         await user.save();
 
-
-
         res.status(201).json({ message: "Doctor added successfully", doctor });
     } catch (error) {
         console.error("❌ Error in addDoctor:", error);
